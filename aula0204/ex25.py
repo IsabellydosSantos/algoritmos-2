@@ -1,4 +1,4 @@
-def mostrar_menu():
+def menu():
     print("\n=== Agenda de Contatos ===")
     print("1 - Adicionar contato")
     print("2 - Ver todos os contatos")
@@ -60,7 +60,7 @@ def remover_contato(agenda):
 agenda = {}
 
 while True:
-    opcao = mostrar_menu()
+    opcao = menu()
     
     if opcao == "1":
         adicionar_contato(agenda)
