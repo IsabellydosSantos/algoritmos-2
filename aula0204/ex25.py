@@ -1,43 +1,77 @@
 def mostrar_menu():
-    print("Agenda de Contatos")
+    print("\n=== Agenda de Contatos ===")
     print("1 - Adicionar contato")
     print("2 - Ver todos os contatos")
     print("3 - Buscar contato")
-    print("4 - Excluir contato")
+    print("4 - Remover contato")
     print("5 - Sair")
     return input("Escolha uma opção: ")
 
-
 def adicionar_contato(agenda):
-    print("Novo contato")
+    print("\n--- Novo Contato ---")
     nome = input("Nome: ").strip().lower()
     telefone = input("Telefone: ")
     email = input("Email: ")
+    
+    agenda[nome] = {"telefone": telefone, "email": email}
+    print(f"\nContato '{nome}' adicionado com sucesso!")
 
-    agenda[nome] = {"nome": nome, "telefone": telefone, "email": email}
-    print(f"Contato {nome} adicionado")
-
-
-def ver_contato(agenda):
+def ver_contatos(agenda):
     if not agenda:
-        print("Nenhum contato cadastrado")
+        print("\nNenhum contato cadastrado.")
         return
-
-    print("Lista de Contatos")
+    
+    print("\n--- Lista de Contatos ---")
     for nome, info in agenda.items():
         print(f"Nome: {nome.capitalize()}")
-        print(f"Telefone: {info['telefone']}")
-        print(f"Email: {info['email']}")
-
+        print(f"  Telefone: {info['telefone']}")
+        print(f"  Email: {info['email']}")
+        print("-" * 20)
 
 def buscar_contato(agenda):
     if not agenda:
-        print("Nenhum contato cadastrado")
+        print("\nNenhum contato cadastrado.")
         return
-
-    nome = input("Insira o nome do contato: ").strip().lower()
-
+    
+    nome = input("\nInsira o nome do contato: ").strip().lower()
+    
     if nome in agenda:
         info = agenda[nome]
-        print("Contato encontrado")
-        print(f"Nome:")
+        print(f"\n--- Contato Encontrado ---")
+        print(f"Nome: {nome.capitalize()}")
+        print(f"Telefone: {info['telefone']}")
+        print(f"Email: {info['email']}")
+    else:
+        print(f"\nContato '{nome}' não encontrado.")
+
+def remover_contato(agenda):
+    if not agenda:
+        print("\nNenhum contato cadastrado.")
+        return
+    
+    nome = input("\nInsira o nome do contato a remover: ").strip().lower()
+    
+    if nome in agenda:
+        del agenda[nome]
+        print(f"\nContato '{nome}' removido com sucesso!")
+    else:
+        print(f"\nContato '{nome}' não encontrado.")
+
+agenda = {}
+
+while True:
+    opcao = mostrar_menu()
+    
+    if opcao == "1":
+        adicionar_contato(agenda)
+    elif opcao == "2":
+        ver_contatos(agenda)
+    elif opcao == "3":
+        buscar_contato(agenda)
+    elif opcao == "4":
+        remover_contato(agenda)
+    elif opcao == "5":
+        print("\nSaindo da agenda.")
+        break
+    else:
+        print("\nOpção inválida! Tente novamente.")
