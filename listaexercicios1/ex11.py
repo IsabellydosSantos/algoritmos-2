@@ -2,7 +2,7 @@ def verificar_string(lista, string):
     """
     Verifica se a string está presente na lista
     Retorna True se estiver, False caso contrário
-    """
+    """ 
     if string in lista:
         return True
     else:
