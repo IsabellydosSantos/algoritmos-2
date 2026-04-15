@@ -2,7 +2,7 @@
 
 def ler_matriz():
     matriz = []
-    print("Digite os elementos da matriz 3x3:")
+    print("Insira os elementos da matriz 3x3:")
     
     for i in range(3):
         linha = []
@@ -14,7 +14,7 @@ def ler_matriz():
                     linha.append(valor)
                     break
                 except ValueError:
-                    print("  Erro! Digite um número inteiro válido.")
+                    print("Insira apenas números inteiros válidos.")
         matriz.append(linha)
     
     return matriz
@@ -36,19 +36,14 @@ def encontrar_linha_maior_soma(matriz):
     return linha_maior, maior_soma, linha_valores
 
 def imprimir_matriz(matriz):
-    print("\n" + "=" * 40)
-    print("MATRIZ DIGITADA:")
-    print("=" * 40)
+    print("Matriz:")
     for i in range(3):
-        # Formata cada linha com 4 espaços para cada elemento
         linha_formatada = "  ".join(f"{matriz[i][j]:>4}" for j in range(3))
         print(f"Linha {i+1}: {linha_formatada}")
 
 
-# Ler a matriz
 matriz = ler_matriz()
 
-# Imprimir a matriz
 imprimir_matriz(matriz)
 
 linha, soma, valores = encontrar_linha_maior_soma(matriz)
