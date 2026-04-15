@@ -12,11 +12,10 @@ def is_palindromo(n):
     
     return n == invertido
 
-# Teste rápido
-print("Digite um número: ", end="")
+print("Insira um número: ", end="")
 num = int(input())
 
 if is_palindromo(num):
-    print(f"{num} é palíndromo!")
+    print(f"{num} é palíndromo.")
 else:
     print(f"{num} não é palíndromo.")
