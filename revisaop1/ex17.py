@@ -1,3 +1,5 @@
+# soma: -1+2-3+4-5+6-...+n
+
 def soma_alt(n):
     soma = 0
     for i in range(1, n+1):
