@@ -1,3 +1,5 @@
+# soma: (2n)! + 3 somatório j3 + 4 somatório j4
+
 import math
 
 def soma(n):
