@@ -4,7 +4,7 @@ def menu():
     print("2 - Ver todos os contatos")
     print("3 - Buscar contato")
     print("4 - Remover contato")
-    print("5 - Sair")
+    print("5 - Sair") 
     return input("Escolha uma opção: ")
 
 def adicionar_contato(agenda):
