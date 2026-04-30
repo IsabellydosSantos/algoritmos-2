@@ -37,3 +37,4 @@ matriz_transposta = transposta(matriz)
 print("\nMatriz transposta:")
 for linha in matriz_transposta:
     print(linha)
+
