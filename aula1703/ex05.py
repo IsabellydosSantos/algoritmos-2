@@ -11,3 +11,4 @@ strings = input("Informe uma string: ").lower().strip()
 resultado = embaralhar(strings)
 
 print(f"String com caracteres embaralhados: {resultado}")
+
