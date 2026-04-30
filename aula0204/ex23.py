@@ -1,4 +1,4 @@
-def freq(texto): 
+def freq(texto):
     pontuacao = '.,:;?!"'
     texto_rev = ''
     for char in texto:
