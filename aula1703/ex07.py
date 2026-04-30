@@ -71,3 +71,4 @@ for linha in matrizB:
     print(linha)
 
 print(f"Produto das matrizes A e B: {resultado}")
+
