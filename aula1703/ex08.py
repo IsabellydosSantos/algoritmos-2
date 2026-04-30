@@ -31,7 +31,3 @@ print(resultadomdc)
 
 print(f"MMC({n1},{n2})")
 print(resultadommc)
-
-
-
-
