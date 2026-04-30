@@ -5,3 +5,4 @@ def potencia(base, exp):
         resultado *= base
 
     return resultado
+
