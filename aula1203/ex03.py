@@ -9,3 +9,4 @@ for i in range(3):
 for linha in matriz:
 
     print(linha)
+
