@@ -56,4 +56,5 @@ print(f"Soma das matrizes A e B: {resultado}")
 print("Matriz C: \n")
 for linha in resultado:
     print(resultado)
-    
+
+
