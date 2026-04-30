@@ -27,3 +27,4 @@ resultado = freq(entrada)
 palavra_freq = list(resultado.keys())[0]
 quantidade = list(resultado.values())[0]
 print(f"{resultado}\nA palavra mais frequente é '{palavra_freq}' que aparece {quantidade} vezes")
+
