@@ -90,3 +90,4 @@ if resultado_transpostas is not None:
         print(linha)
 else:
     print("\nNão foi possível realizar a soma das transpostas pois as dimensões são diferentes.")
+
