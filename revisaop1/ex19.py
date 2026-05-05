@@ -11,3 +11,4 @@ for i in range(linhas):
     matriz.append(linha)
 
 print(f"Menor elemento da matriz: {menor_elem(matriz)}")
+
