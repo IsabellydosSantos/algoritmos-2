@@ -17,3 +17,4 @@ n = int(input("Insira um número inteiro positivo: "))
 resultado = tribonacci(n)
 
 print(f"Os {n} primeiros números de Tribonacci são: {resultado}")
+
