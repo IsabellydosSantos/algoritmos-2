@@ -36,3 +36,4 @@ try:
     print(f"MDC: {mmc_resultado}")
 except ValueError:
     print("Insira apenas números inteiros.")
+
