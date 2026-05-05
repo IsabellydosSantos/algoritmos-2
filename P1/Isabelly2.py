@@ -57,3 +57,4 @@ if resultado is not None:
     print("Produto das Matrizes A e B: ")
     for linha in resultado:
         print(linha)
+
