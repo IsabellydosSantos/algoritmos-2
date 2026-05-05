@@ -16,3 +16,4 @@ try:
             print(f"Estudante: {nome}\nMédia: {media:.2f}")
 except:
     print("Não foi possível abrir o arquivo.")
+
