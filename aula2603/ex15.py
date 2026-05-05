@@ -21,3 +21,4 @@ try:
 
 except ValueError:
     print("Insira apenas números inteiros.")
+    
