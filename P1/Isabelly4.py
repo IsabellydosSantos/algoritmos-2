@@ -29,3 +29,4 @@ palavra_freq = list(resultado.keys())[0]
 quant = list(resultado.values())[0]
 
 print(f"{resultado} sendo a palavra mais frequente {palavra_freq} com quantidade {quant}")
+
