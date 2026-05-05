@@ -20,3 +20,4 @@ texto = input("Insira uma string: ").strip().lower()
 resultado = letra(texto)
 
 print(f"A letra mais comum é: {resultado}")
+
