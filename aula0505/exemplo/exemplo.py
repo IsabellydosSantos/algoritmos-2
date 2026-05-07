@@ -7,3 +7,4 @@ try:
     arquivo.close()
 except:
     print("Problemas com o arquivo.")
+
