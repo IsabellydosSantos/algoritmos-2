@@ -6,3 +6,4 @@ def rec(n):
 
 n = 6
 print(rec(n))
+
