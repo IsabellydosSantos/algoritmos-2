@@ -20,3 +20,4 @@ if resultado:
     print("A string está na lista")
 else:
     print("A string não está na lista")
+
