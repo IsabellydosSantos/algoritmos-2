@@ -6,3 +6,4 @@ if dist <= 200:
 else:
     preco = dist * 0.45
     print(f"O preço da passagem é igual a RS{preco}")
+
