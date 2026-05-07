@@ -19,3 +19,4 @@ while pilha:  # Enquanto a pilha nao estiver vazia
     print(f" Removido : { elemento } ")
 
 print("\nPilha vazia: ", pilha)
+
