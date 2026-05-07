@@ -12,5 +12,16 @@ def ler_arquivo(nome, separador):
 
     except FileNotFoundError:
         print(f"Erro: Arquivo {nome} não encontrado")
+        return []
     except Exception as e:
         print(f"Erro ao ler o arquivo: {e}")
+        return []
+
+
+nome = input("Insira o nome do arquivo: ")
+sep = input("Insira o separador: ")
+
+resultado = ler_arquivo(nome, sep)
+
+print(resultado)
+
