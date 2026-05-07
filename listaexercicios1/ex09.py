@@ -46,3 +46,4 @@ if impares:
     print(f"   Média: {sum(impares)/len(impares):.2f}")
 else:
     print("   Nenhum número ímpar encontrado")
+
