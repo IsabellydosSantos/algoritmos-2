@@ -10,4 +10,4 @@ if prest > psal:
   print("Seu empréstimo foi negado.")
 else:
   print("Seu empréstimo foi aprovado.")
-  
+
