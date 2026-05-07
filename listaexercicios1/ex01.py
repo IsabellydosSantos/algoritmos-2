@@ -12,3 +12,4 @@ km = float(input("Quantos KMs foram percorridos? "))
 resultado = calc(dias,km)
 
 print(f"O preço total a ser gasto é de R${resultado}")
+
