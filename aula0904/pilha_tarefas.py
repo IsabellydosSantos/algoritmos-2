@@ -6,3 +6,4 @@ tarefas.append("Tarefa 3")
 
 while tarefas:
     print("Executando : ", tarefas.pop())
+
