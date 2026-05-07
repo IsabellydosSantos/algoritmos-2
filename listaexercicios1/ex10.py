@@ -12,3 +12,4 @@ string_comum = ''.join(comuns)
 
 print(f"Caracteres comuns: {string_comum}")
 print(f"Quantidade de caracteres comuns: {len(string_comum)}")
+
