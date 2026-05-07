@@ -22,3 +22,4 @@ lista_soma = [a + b for a, b in zip(lista1, lista2)]
 print(f"Lista 1: {lista1}")
 print(f"Lista 2: {lista2}")
 print(f"Lista soma: {lista_soma}")
+
