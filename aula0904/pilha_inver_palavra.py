@@ -17,3 +17,4 @@ while pilha:
     palavra_invertida += pilha.pop()
 
 print("Palavra invertida: ", palavra_invertida)
+
