@@ -23,4 +23,4 @@ if contador > 0:
   print(f"Média Aritmética: {media:.2f}")
 else:
   print("Nenhum número foi digitado antes do 0")
-  
+
