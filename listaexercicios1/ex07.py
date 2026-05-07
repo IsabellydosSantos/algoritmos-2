@@ -19,3 +19,4 @@ if is_palindromo(num):
     print(f"{num} é palíndromo.")
 else:
     print(f"{num} não é palíndromo.")
+    
