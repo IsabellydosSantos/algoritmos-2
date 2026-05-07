@@ -8,3 +8,4 @@ fila.append(" Doc3 ")
 
 while fila:
     print("Imprimindo: ", fila.popleft())
+
