@@ -25,3 +25,4 @@ print(f"Taxa de juros: {taxa_juros}% ao mês")
 print(f"Saldo final após 24 meses: R$ {saldo:.2f}")
 print(f"Total ganho com juros: R$ {total_juros:.2f}")
 print(f"Rendimento total: {(total_juros/deposito_inicial)*100:.1f}%")
+
