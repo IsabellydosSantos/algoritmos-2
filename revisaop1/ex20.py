@@ -30,3 +30,4 @@ if matriz_identidade(matriz):
     print("É uma matriz identidade")
 else:
     print("Não é uma matriz identidade")
+
