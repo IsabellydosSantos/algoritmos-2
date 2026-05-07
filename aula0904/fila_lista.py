@@ -19,3 +19,4 @@ while fila:  # Enquanto a fila nao estiver vazia
     print(f" Atendido : { cliente }")
 
 print("\nFila vazia: ", fila)
+
