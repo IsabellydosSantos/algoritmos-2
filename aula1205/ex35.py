@@ -18,7 +18,15 @@ def selection_sort(lista):
     return lista
 
 
-L = [14, 7, 8, 34, 56, 4, 0, 9, -8, 100]
+entrada = input("Insira os elementos da lista (separados por vírgula: ")
 
-lista_ord = selection_sort(L.copy())
-print(f"Lista ordenada: {lista_ord}")
+try:
+    lista = [int(x) for x in entrada.split(',')]
+
+    if len(lista) == 0:
+        print("\n Nenhum número foi inserido.")
+    else:
+        lista_ordenada = selection_sort(L.copy())
+        print(f" Lista ordenada: {lista_ordenada}")
+except ValueError:
+    print("\n Insira apenas números inteiros separados por vírgulas")
