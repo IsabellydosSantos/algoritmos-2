@@ -1,0 +1,8 @@
+Ana Notebook 3500.00
+Carlos Mouse 50.00
+Ana Teclado 120.00
+Beatriz Notebook 4000.00
+Carlos Mouse 50.00
+Ana Mouse 50.00
+Beatriz Teclado 150.00
+Carlos Notebook 3200.00
