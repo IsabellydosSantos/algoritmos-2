@@ -1,10 +1,10 @@
 import random
-import math
+
 
 def insertion_sort_baralho(baralho):
     total_comparacoes = 0
     
-    for i in range(1, len(baralho):
+    for i in range(1, len(baralho)):
         carta_atual = baralho[i]
         posicao = i - 1
         
@@ -108,7 +108,7 @@ print("Organizador de baralhos")
 
 print("\n Criando baralho")
 baralho = criar_baralho()
-mostrar_baralho_grade(baralho, " Baralho criado: ", colunas=13)
+mostrar_baralho(baralho, " Baralho criado: ", colunas=13)
 
 print("\n Embaralhando")
 random.shuffle(baralho)
