@@ -1,0 +1,6 @@
+1000 capital inicial
+-500 compra de materia-prima
+-200 mao de obra
+400 venda de primeiro lote
+300 venda de segundo lote
+-300 aluguel da fabrica
