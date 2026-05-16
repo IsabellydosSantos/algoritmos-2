@@ -1,11 +1,4 @@
-def torre_hanoi_recursivo(n, origem, destino, auxiliar):
-    """
-    Resolve a Torre de Hanói recursivamente
-    n: número de discos
-    origem: pino de origem
-    destino: pino de destino
-    auxiliar: pino auxiliar
-    """
+def torre_hanoi(n, origem, destino, auxiliar):
     if n == 1:
         print(f"Mover disco 1 de {origem} para {destino}")
         return 1
@@ -23,7 +16,7 @@ def torre_hanoi_recursivo(n, origem, destino, auxiliar):
     
     return movimentos
 
-def jogar_hanoi_recursivo():
+def jogar_hanoi():
     print("=== Torre de Hanói - Versão Recursiva ===")
     try:
         n = int(input("Digite o número de discos (1-8): "))
@@ -43,5 +36,5 @@ def jogar_hanoi_recursivo():
     except ValueError:
         print("Por favor, digite um número válido!")
 
-if __name__ == "__main__":
-    jogar_hanoi_recursivo()
+
+jogar_hanoi_recursivo()
