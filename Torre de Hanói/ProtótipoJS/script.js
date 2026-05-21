@@ -135,7 +135,7 @@ function realizarMovimento(origem, destino) {
                 🎉 Parabéns! Você venceu! 🎉<br>
                 Movimentos: ${moveCount} | Movimentos Mínimos: ${minimoTeorico}<br>
                 ${moveCount === minimoTeorico ? '⭐ Perfeito! Você fez o mínimo de movimentos! ⭐' :
-                  `💪 Você fez ${moveCount - minimoTeorico} movimentos extras. Dá para melhorar!`}
+                  `Você fez ${moveCount - minimoTeorico} movimentos extras. Dá para melhorar!`}
             </div>
         `;
         document.getElementById('victoryArea').innerHTML = victoryHtml;
