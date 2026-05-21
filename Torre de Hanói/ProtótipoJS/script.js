@@ -9,13 +9,32 @@ let moveCount = 0;
 let numDiscos = 3;
 let gameWon = false;
 
-function inicializarJogo() {
-    numDiscos = parseInt(prompt("Digite o número de discos (1-6):", "3"));
-    if (isNaN(numDiscos) || numDiscos < 1 || numDiscos > 6) {
-        numDiscos = 3;
-        alert("Usando 3 discos (valor padrão)");
+function inicializarJogo(discoCount = null) {
+    // Se um número foi passado, usa ele; senão, pega do input
+    if (discoCount === null) {
+        const input = document.getElementById('diskSelector');
+        if (input) {
+            numDiscos = parseInt(input.value);
+        }
+    } else {
+        numDiscos = discoCount;
     }
     
+    // Validação para 1-8 discos
+    if (isNaN(numDiscos) || numDiscos < 1 || numDiscos > 8) {
+        numDiscos = 3;
+        if (document.getElementById('diskSelector')) {
+            document.getElementById('diskSelector').value = 3;
+        }
+        mostrarMensagem('Usando 3 discos (valor padrão: 1-8)', 'error');
+    }
+    
+    // Atualiza o input com o valor válido
+    if (document.getElementById('diskSelector')) {
+        document.getElementById('diskSelector').value = numDiscos;
+    }
+    
+    // Inicializa as hastes
     hastes = {
         A: [...Array(numDiscos).keys()].map(i => numDiscos - i),
         B: [],
@@ -24,7 +43,29 @@ function inicializarJogo() {
     moveCount = 0;
     selectedPeg = null;
     gameWon = false;
+    document.getElementById('victoryArea').innerHTML = '';
     atualizarInterface();
+}
+
+function aplicarDiscos() {
+    const input = document.getElementById('diskSelector');
+    let novoNumero = parseInt(input.value);
+    
+    // Validação para 1-8 discos
+    if (isNaN(novoNumero) || novoNumero < 1 || novoNumero > 8) {
+        mostrarMensagem('Por favor, escolha um número entre 1 e 8!', 'error');
+        input.value = numDiscos; // Restaura o valor anterior
+        return;
+    }
+    
+    // Se o número mudou, reinicia o jogo
+    if (novoNumero !== numDiscos) {
+        numDiscos = novoNumero;
+        inicializarJogo(numDiscos);
+        mostrarMensagem(`Jogo reiniciado com ${numDiscos} discos!`, 'success');
+    } else {
+        mostrarMensagem(`Já está com ${numDiscos} discos!`, 'success');
+    }
 }
 
 function resetarJogo() {
@@ -42,7 +83,15 @@ function resetarJogo() {
 }
 
 function novoJogo() {
-    inicializarJogo();
+    // Pega o valor atual do input
+    const input = document.getElementById('diskSelector');
+    const novoNumero = parseInt(input.value);
+    
+    if (!isNaN(novoNumero) && novoNumero >= 1 && novoNumero <= 8) {
+        numDiscos = novoNumero;
+    }
+    
+    inicializarJogo(numDiscos);
     mostrarMensagem('Novo jogo iniciado!', 'success');
 }
 
@@ -150,36 +199,47 @@ function atualizarInterface() {
         pegDiv.className = `peg ${selectedPeg === haste ? 'selected' : ''}`;
         pegDiv.onclick = () => handlePegClick(haste);
         
+        // Container para os discos (posicionado sobre o pino)
         const disksContainer = document.createElement('div');
         disksContainer.className = 'disks-container';
         
         const discos = hastes[haste];
-        const maxDiskSize = 120; // pixels
-        const minDiskSize = 40;
-        const step = (maxDiskSize - minDiskSize) / numDiscos;
+        const maxDiskSize = 180; // largura máxima em pixels (aumentado para 8 discos)
+        const minDiskSize = 40;   // largura mínima em pixels
+        const step = (maxDiskSize - minDiskSize) / (numDiscos - 1);
         
+        // Adiciona os discos de baixo para cima
         discos.forEach(disco => {
             const diskDiv = document.createElement('div');
-            const diskWidth = minDiskSize + (disco - 1) * step;
+            let diskWidth;
+            if (numDiscos === 1) {
+                diskWidth = (maxDiskSize + minDiskSize) / 2;
+            } else {
+                diskWidth = minDiskSize + (disco - 1) * step;
+            }
             diskDiv.className = 'disk';
             diskDiv.style.width = `${diskWidth}px`;
             diskDiv.textContent = disco;
             disksContainer.appendChild(diskDiv);
         });
         
+        // Cria o pino (haste vertical)
         const stickDiv = document.createElement('div');
         stickDiv.className = 'peg-stick';
         
+        // Cria a base
         const baseDiv = document.createElement('div');
         baseDiv.className = 'peg-base';
         
+        // Cria a label
         const labelDiv = document.createElement('div');
         labelDiv.className = 'peg-label';
         labelDiv.textContent = `Haste ${haste}`;
         
-        pegDiv.appendChild(disksContainer);
+        // Monta a haste
         pegDiv.appendChild(stickDiv);
         pegDiv.appendChild(baseDiv);
+        pegDiv.appendChild(disksContainer);
         pegDiv.appendChild(labelDiv);
         
         container.appendChild(pegDiv);
@@ -197,4 +257,15 @@ document.addEventListener('DOMContentLoaded', () => {
     
     document.getElementById('newGameBtn').addEventListener('click', novoJogo);
     document.getElementById('resetGameBtn').addEventListener('click', resetarJogo);
+    document.getElementById('applyDiscsBtn').addEventListener('click', aplicarDiscos);
+    
+    // Permitir aplicar ao pressionar Enter no input
+    const diskInput = document.getElementById('diskSelector');
+    if (diskInput) {
+        diskInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                aplicarDiscos();
+            }
+        });
+    }
 });
