@@ -194,6 +194,18 @@ function atualizarInterface() {
     
     const hastesOrder = ['A', 'B', 'C'];
     
+    // Paleta de cores em gradiente arco-íris suaves
+    const coresDiscos = [
+        { gradiente: 'linear-gradient(135deg, #FF6B6B, #FF5252)', cor: '#FF5252' },      // Vermelho suave
+        { gradiente: 'linear-gradient(135deg, #FFB74D, #FF9800)', cor: '#FF9800' },      // Laranja suave
+        { gradiente: 'linear-gradient(135deg, #FFD54F, #FFC107)', cor: '#FFC107' },      // Amarelo suave
+        { gradiente: 'linear-gradient(135deg, #81C784, #4CAF50)', cor: '#4CAF50' },      // Verde suave
+        { gradiente: 'linear-gradient(135deg, #64B5F6, #2196F3)', cor: '#2196F3' },      // Azul suave
+        { gradiente: 'linear-gradient(135deg, #9575CD, #673AB7)', cor: '#673AB7' },      // Roxo suave
+        { gradiente: 'linear-gradient(135deg, #F06292, #E91E63)', cor: '#E91E63' },      // Rosa suave
+        { gradiente: 'linear-gradient(135deg, #4DB6AC, #009688)', cor: '#009688' }       // Turquesa suave
+    ];
+    
     hastesOrder.forEach(haste => {
         const pegDiv = document.createElement('div');
         pegDiv.className = `peg ${selectedPeg === haste ? 'selected' : ''}`;
@@ -204,8 +216,8 @@ function atualizarInterface() {
         disksContainer.className = 'disks-container';
         
         const discos = hastes[haste];
-        const maxDiskSize = 180; // largura máxima em pixels (aumentado para 8 discos)
-        const minDiskSize = 40;   // largura mínima em pixels
+        const maxDiskSize = 180;
+        const minDiskSize = 40;
         const step = (maxDiskSize - minDiskSize) / (numDiscos - 1);
         
         // Adiciona os discos de baixo para cima
@@ -219,6 +231,15 @@ function atualizarInterface() {
             }
             diskDiv.className = 'disk';
             diskDiv.style.width = `${diskWidth}px`;
+            
+            // Aplica cor gradiente baseada no número do disco
+            const corIndex = (disco - 1) % coresDiscos.length;
+            diskDiv.style.background = coresDiscos[corIndex].gradiente;
+            
+            // Adiciona uma borda mais escura para destaque
+            diskDiv.style.border = `2px solid ${coresDiscos[corIndex].cor}`;
+            diskDiv.style.borderBottom = `4px solid ${coresDiscos[corIndex].cor}`;
+            
             diskDiv.textContent = disco;
             disksContainer.appendChild(diskDiv);
         });
