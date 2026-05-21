@@ -194,7 +194,7 @@ function atualizarInterface() {
 
     const hastesOrder = ['A', 'B', 'C'];
 
-    // Paleta de cores em gradiente arco-íris suaves
+    // Paleta de cores em gradiente
     const coresDiscos = [
         { gradiente: 'linear-gradient(135deg, #FF6B6B, #FF5252)', cor: '#FF5252' },      // Vermelho
         { gradiente: 'linear-gradient(135deg, #FFB74D, #FF9800)', cor: '#FF9800' },      // Laranja
