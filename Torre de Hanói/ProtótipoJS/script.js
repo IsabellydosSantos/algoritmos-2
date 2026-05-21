@@ -196,14 +196,14 @@ function atualizarInterface() {
 
     // Paleta de cores em gradiente arco-íris suaves
     const coresDiscos = [
-        { gradiente: 'linear-gradient(135deg, #FF6B6B, #FF5252)', cor: '#FF5252' },      // Vermelho suave
-        { gradiente: 'linear-gradient(135deg, #FFB74D, #FF9800)', cor: '#FF9800' },      // Laranja suave
-        { gradiente: 'linear-gradient(135deg, #FFD54F, #FFC107)', cor: '#FFC107' },      // Amarelo suave
-        { gradiente: 'linear-gradient(135deg, #81C784, #4CAF50)', cor: '#4CAF50' },      // Verde suave
-        { gradiente: 'linear-gradient(135deg, #64B5F6, #2196F3)', cor: '#2196F3' },      // Azul suave
-        { gradiente: 'linear-gradient(135deg, #9575CD, #673AB7)', cor: '#673AB7' },      // Roxo suave
-        { gradiente: 'linear-gradient(135deg, #F06292, #E91E63)', cor: '#E91E63' },      // Rosa suave
-        { gradiente: 'linear-gradient(135deg, #4DB6AC, #009688)', cor: '#009688' }       // Turquesa suave
+        { gradiente: 'linear-gradient(135deg, #FF6B6B, #FF5252)', cor: '#FF5252' },      // Vermelho
+        { gradiente: 'linear-gradient(135deg, #FFB74D, #FF9800)', cor: '#FF9800' },      // Laranja
+        { gradiente: 'linear-gradient(135deg, #FFD54F, #FFC107)', cor: '#FFC107' },      // Amarelo
+        { gradiente: 'linear-gradient(135deg, #81C784, #4CAF50)', cor: '#4CAF50' },      // Verde
+        { gradiente: 'linear-gradient(135deg, #64B5F6, #2196F3)', cor: '#2196F3' },      // Azul
+        { gradiente: 'linear-gradient(135deg, #5090c4, #1565C0)', cor: '#1565C0' },      // Azul escuro
+        { gradiente: 'linear-gradient(135deg, #9575CD, #673AB7)', cor: '#673AB7' },      // Roxo
+        { gradiente: 'linear-gradient(135deg, #F06292, #E91E63)', cor: '#E91E63' }       // Rosa
     ];
 
     hastesOrder.forEach(haste => {
