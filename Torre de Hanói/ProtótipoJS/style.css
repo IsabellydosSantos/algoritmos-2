@@ -192,7 +192,6 @@ h1 {
 
 .disk {
     height: 32px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
     border-radius: 15px;
     margin: 1px 0;
     transition: all 0.3s ease;
@@ -205,6 +204,12 @@ h1 {
     font-weight: bold;
     position: relative;
     z-index: 2;
+}
+
+.disk:hover {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .peg-label {
@@ -282,4 +287,4 @@ button {
     .peg-label {
         font-size: 14px;
     }
-}
+    }
