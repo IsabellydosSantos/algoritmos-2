@@ -18,7 +18,7 @@ def torre_hanoi(n, origem, destino, auxiliar):
 
 
 def jogar_hanoi():
-    print("=== Torre de Hanói - Versão Recursiva ===")
+    print("=== Torre de Hanói - Solução ===")
     try:
         n = int(input("Digite o número de discos (1-8): "))
         if n < 1 or n > 8:
