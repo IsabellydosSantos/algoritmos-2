@@ -1,23 +1,23 @@
-def torre_hanoi(n, origem, destino, auxiliar):
+def solc_hanoi(n, origem, destino, auxiliar):
     if n == 1:
         print(f"Mover disco 1 de {origem} para {destino}\n")
         return 1
 
     movimentos = 0
     # Mover n-1 discos da origem para o auxiliar
-    movimentos += torre_hanoi(n - 1, origem, auxiliar, destino)
+    movimentos += solc_hanoi(n - 1, origem, auxiliar, destino)
 
     # Mover o disco maior da origem para o destino
     print(f"Mover disco {n} de {origem} para {destino}\n")
     movimentos += 1
 
     # Mover n-1 discos do auxiliar para o destino
-    movimentos += torre_hanoi(n - 1, auxiliar, destino, origem)
+    movimentos += solc_hanoi(n - 1, auxiliar, destino, origem)
 
     return movimentos
 
 
-def jogar_hanoi():
+def torre_hanoi():
     print("=== Torre de Hanói - Solução ===")
     try:
         n = int(input("Digite o número de discos (1-8): "))
@@ -28,7 +28,7 @@ def jogar_hanoi():
         print(f"\nResolvendo Torre de Hanói com {n} discos:")
         print("-" * 40)
 
-        movimentos = torre_hanoi(n, 'A', 'C', 'B')
+        movimentos = solc_hanoi(n, 'A', 'C', 'B')
 
         print("-" * 40)
         print(f"Total de movimentos necessários: {movimentos}")
@@ -38,4 +38,4 @@ def jogar_hanoi():
         print("Por favor, digite um número válido!")
 
 
-jogar_hanoi()
+torre_hanoi()
