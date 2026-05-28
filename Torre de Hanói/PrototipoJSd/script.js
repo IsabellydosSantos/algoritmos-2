@@ -12,8 +12,13 @@ let gameWon = false;
 // Array para armazenar a sequência ótima de movimentos
 let sequenciaOtima = [];
 
+// ========== VARIÁVEIS DO CRONÔMETRO ==========
+let cronometroAtivo = false;
+let tempoInicio = 0;
+let tempoDecorrido = 0;
+let intervaloId = null;
+
 // ========== FUNÇÃO RECURSIVA PARA GERAR SOLUÇÃO ÓTIMA ==========
-// Exatamente como o algoritmo clássico de Hanói
 function gerarSolucaoOtima(n, origem, destino, auxiliar) {
     let movimentos = [];
     
@@ -22,13 +27,8 @@ function gerarSolucaoOtima(n, origem, destino, auxiliar) {
         return movimentos;
     }
     
-    // Mover n-1 discos da origem para o auxiliar
     movimentos = movimentos.concat(gerarSolucaoOtima(n - 1, origem, auxiliar, destino));
-    
-    // Mover o disco maior da origem para o destino
     movimentos.push([origem, destino]);
-    
-    // Mover n-1 discos do auxiliar para o destino
     movimentos = movimentos.concat(gerarSolucaoOtima(n - 1, auxiliar, destino, origem));
     
     return movimentos;
@@ -38,7 +38,58 @@ function calcularSequenciaOtima() {
     sequenciaOtima = gerarSolucaoOtima(numDiscos, 'A', 'C', 'B');
 }
 
-// ========== FIM DA FUNÇÃO RECURSIVA ==========
+// ========== FUNÇÕES DO CRONÔMETRO ==========
+function iniciarCronometro() {
+    if (intervaloId !== null) return;
+    
+    cronometroAtivo = true;
+    tempoInicio = Date.now() - tempoDecorrido;
+    
+    intervaloId = setInterval(() => {
+        if (cronometroAtivo && !gameWon) {
+            tempoDecorrido = Date.now() - tempoInicio;
+            atualizarDisplayCronometro();
+        }
+    }, 100);
+}
+
+function pararCronometro() {
+    cronometroAtivo = false;
+    if (intervaloId !== null) {
+        clearInterval(intervaloId);
+        intervaloId = null;
+    }
+}
+
+function resetarCronometro() {
+    pararCronometro();
+    tempoDecorrido = 0;
+    atualizarDisplayCronometro();
+}
+
+function atualizarDisplayCronometro() {
+    const totalSegundos = Math.floor(tempoDecorrido / 1000);
+    const minutos = Math.floor(totalSegundos / 60);
+    const segundos = totalSegundos % 60;
+    const milesimos = Math.floor((tempoDecorrido % 1000) / 10);
+    
+    const tempoFormatado = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}:${milesimos.toString().padStart(2, '0')}`;
+    
+    const cronometroDisplay = document.getElementById('cronometro');
+    if (cronometroDisplay) {
+        cronometroDisplay.textContent = tempoFormatado;
+    }
+}
+
+function getTempoFormatado() {
+    const totalSegundos = Math.floor(tempoDecorrido / 1000);
+    const minutos = Math.floor(totalSegundos / 60);
+    const segundos = totalSegundos % 60;
+    const milesimos = Math.floor((tempoDecorrido % 1000) / 10);
+    return `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}:${milesimos.toString().padStart(2, '0')}`;
+}
+
+// ========== FIM DAS FUNÇÕES DO CRONÔMETRO ==========
 
 function inicializarJogo(discoCount = null) {
     if (discoCount === null) {
@@ -70,6 +121,10 @@ function inicializarJogo(discoCount = null) {
     moveCount = 0;
     selectedPeg = null;
     gameWon = false;
+    
+    // Resetar e parar cronômetro
+    resetarCronometro();
+    pararCronometro();
     
     // Calcular a sequência ótima para a quantidade atual de discos
     calcularSequenciaOtima();
@@ -106,6 +161,10 @@ function resetarJogo() {
     moveCount = 0;
     selectedPeg = null;
     gameWon = false;
+    
+    // Resetar e parar cronômetro
+    resetarCronometro();
+    pararCronometro();
     
     // Recalcular a sequência ótima
     calcularSequenciaOtima();
@@ -145,6 +204,11 @@ function movimentoValido(origem, destino) {
 }
 
 function realizarMovimento(origem, destino) {
+    // Iniciar cronômetro no primeiro movimento
+    if (moveCount === 0 && !gameWon) {
+        iniciarCronometro();
+    }
+    
     if (!movimentoValido(origem, destino)) {
         mostrarMensagem(`❌ Movimento inválido!`, 'error');
         return false;
@@ -160,10 +224,17 @@ function realizarMovimento(origem, destino) {
     if (hastes.C.length === numDiscos) {
         const minimoTeorico = Math.pow(2, numDiscos) - 1;
         gameWon = true;
+        
+        // Parar cronômetro quando vencer
+        pararCronometro();
+        
+        const tempoFinal = getTempoFormatado();
+        
         const victoryHtml = `
             <div class="victory-message">
                 🎉 PARABÉNS! VOCÊ VENCEU! 🎉<br>
                 Movimentos: ${moveCount} | Mínimo teórico: ${minimoTeorico}<br>
+                Tempo: ${tempoFinal}<br>
                 ${moveCount === minimoTeorico ? '⭐ PERFEITO! Você fez o mínimo de movimentos! ⭐' : 
                   `💪 Você fez ${moveCount - minimoTeorico} movimentos extras. Tente melhorar!`}
             </div>
@@ -216,19 +287,16 @@ function mostrarMensagem(msg, tipo) {
     }, 3000);
 }
 
-// ========== DICA USANDO A SEQUÊNCIA GERADA RECURSIVAMENTE ==========
 function mostrarDica() {
     if (gameWon) {
         mostrarMensagem("🎉 O jogo já foi concluído! Comece um novo jogo.", 'error');
         return;
     }
     
-    // Verificar se a sequência foi gerada
     if (sequenciaOtima.length === 0) {
         calcularSequenciaOtima();
     }
     
-    // O próximo movimento correto é o movimento número 'moveCount'
     if (moveCount >= sequenciaOtima.length) {
         mostrarMensagem("🤔 Você já deveria ter vencido! Algo deu errado.", 'error');
         return;
@@ -237,7 +305,6 @@ function mostrarDica() {
     const proximoMovimento = sequenciaOtima[moveCount];
     const [origemCorreta, destinoCorreto] = proximoMovimento;
     
-    // Verificar se a haste de origem tem disco
     if (hastes[origemCorreta].length === 0) {
         mostrarMensagem(`⚠️ A sequência ótima diz para mover da haste ${origemCorreta} para ${destinoCorreto}, mas a haste ${origemCorreta} está vazia. Você pode ter se desviado da solução ótima. Tente reiniciar se quiser seguir o caminho mínimo.`, 'success');
         return;
