@@ -9,11 +9,9 @@ let moveCount = 0;
 let numDiscos = 3;
 let gameWon = false;
 
-// Variáveis para dica automática
-let ultimoMovimento = Date.now();
-let tempoSemMovimento = null;
-let ultimoDiscoMovido = null;
-let dicasDadas = [];
+// Histórico para evitar loops
+let historicoMovimentos = []; // Guarda os últimos movimentos
+let ultimaDicaUsada = "";
 
 function inicializarJogo(discoCount = null) {
     if (discoCount === null) {
@@ -45,9 +43,8 @@ function inicializarJogo(discoCount = null) {
     moveCount = 0;
     selectedPeg = null;
     gameWon = false;
-    ultimoMovimento = Date.now();
-    ultimoDiscoMovido = null;
-    dicasDadas = [];
+    historicoMovimentos = [];
+    ultimaDicaUsada = "";
     document.getElementById('victoryArea').innerHTML = '';
     atualizarInterface();
 }
@@ -80,9 +77,8 @@ function resetarJogo() {
     moveCount = 0;
     selectedPeg = null;
     gameWon = false;
-    ultimoMovimento = Date.now();
-    ultimoDiscoMovido = null;
-    dicasDadas = [];
+    historicoMovimentos = [];
+    ultimaDicaUsada = "";
     document.getElementById('victoryArea').innerHTML = '';
     atualizarInterface();
     mostrarMensagem('Jogo reiniciado!', 'success');
@@ -118,12 +114,6 @@ function movimentoValido(origem, destino) {
 }
 
 function realizarMovimento(origem, destino) {
-    ultimoMovimento = Date.now();
-    if (tempoSemMovimento !== null) {
-        clearTimeout(tempoSemMovimento);
-        tempoSemMovimento = null;
-    }
-    
     if (!movimentoValido(origem, destino)) {
         mostrarMensagem(`❌ Movimento inválido!`, 'error');
         return false;
@@ -132,7 +122,12 @@ function realizarMovimento(origem, destino) {
     const disco = hastes[origem].pop();
     hastes[destino].push(disco);
     moveCount++;
-    ultimoDiscoMovido = disco;
+    
+    // Guardar no histórico para evitar loops
+    historicoMovimentos.unshift({ origem, destino, disco });
+    if (historicoMovimentos.length > 6) {
+        historicoMovimentos.pop();
+    }
     
     mostrarMensagem(`✅ Moveu disco ${disco} da haste ${origem} para haste ${destino}`, 'success');
     atualizarInterface();
@@ -196,188 +191,112 @@ function mostrarMensagem(msg, tipo) {
     }, 3000);
 }
 
-// FUNÇÃO DE DICA CORRETA - Baseada na lógica matemática da Torre de Hanói
-function encontrarDica() {
+// ========== DICA QUE NÃO ENTRA EM LOOP ==========
+
+// Verifica se um movimento iria desfazer o movimento anterior
+function ehMovimentoInutil(origem, destino) {
+    if (historicoMovimentos.length === 0) return false;
+    
+    const ultimo = historicoMovimentos[0];
+    // Se está tentando voltar exatamente o mesmo disco que acabou de ser movido
+    if (ultimo.origem === destino && ultimo.destino === origem) {
+        return true;
+    }
+    return false;
+}
+
+// Verifica se um movimento está sugerindo a mesma coisa repetidamente
+function jaFoiSugerido(origem, destino, disco) {
+    const chave = `${origem}->${destino} disco${disco}`;
+    if (ultimaDicaUsada === chave) {
+        return true;
+    }
+    return false;
+}
+
+function encontrarDicaSemLoop() {
     if (gameWon) {
-        return { valido: false, mensagem: "🎉 O jogo já foi concluído!" };
+        return null;
     }
     
-    // Mapeamento do sentido de rotação para cada disco
-    // Disco 1 (menor) - sentido horário: A -> B -> C -> A
-    // Disco 2 - sentido anti-horário: A -> C -> B -> A
-    // Disco 3 - sentido horário (igual ao 1)
-    // Disco 4 - sentido anti-horário (igual ao 2)
-    // Padrão: discos ímpares (1,3,5,7) giram no sentido A->B->C->A
-    //         discos pares (2,4,6,8) giram no sentido A->C->B->A
+    // Lista todos os movimentos possíveis
+    let movimentosPossiveis = [];
     
-    function getProximaHaste(disco, hasteAtual) {
-        const ordemImpar = ['A', 'B', 'C'];
-        const ordemPar = ['A', 'C', 'B'];
-        
-        const ordem = (disco % 2 === 1) ? ordemImpar : ordemPar;
-        const indexAtual = ordem.indexOf(hasteAtual);
-        const proximoIndex = (indexAtual + 1) % 3;
-        return ordem[proximoIndex];
-    }
-    
-    // 1. Primeiro, encontrar o menor disco que pode ser movido (regra de ouro)
-    let menorDiscoEncontrado = Infinity;
-    let melhorOrigem = null;
-    let melhorDestino = null;
-    
-    for (let haste of ['A', 'B', 'C']) {
-        if (hastes[haste].length > 0) {
-            const topo = hastes[haste][hastes[haste].length - 1];
-            if (topo < menorDiscoEncontrado) {
-                // Verificar se existe algum destino válido para este disco
-                for (let destino of ['A', 'B', 'C']) {
-                    if (haste !== destino && movimentoValido(haste, destino)) {
-                        menorDiscoEncontrado = topo;
-                        melhorOrigem = haste;
-                        melhorDestino = destino;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    
-    // 2. Se encontrou o menor disco, verificar se ele está no caminho certo
-    if (melhorOrigem && melhorDestino) {
-        const disco = menorDiscoEncontrado;
-        const destinoCorreto = getProximaHaste(disco, melhorOrigem);
-        
-        // Se o disco NÃO está indo para o lugar certo segundo o padrão
-        if (melhorDestino !== destinoCorreto) {
-            // Verificar se o destino correto é válido
-            if (movimentoValido(melhorOrigem, destinoCorreto)) {
-                return {
-                    valido: true,
-                    origem: melhorOrigem,
-                    destino: destinoCorreto,
-                    disco: disco,
-                    mensagem: `🔮 DICA BASEADA NO PADRÃO: O disco ${disco} (${disco % 2 === 1 ? 'ímpar' : 'par'}) deve se mover da haste ${melhorOrigem} para a haste ${destinoCorreto}. Esta é a sequência ótima!`
-                };
-            }
-        }
-        
-        // Se já está no caminho certo, sugerir o movimento
-        return {
-            valido: true,
-            origem: melhorOrigem,
-            destino: melhorDestino,
-            disco: disco,
-            mensagem: `✅ DICA: Mova o disco ${disco} (o menor que pode ser movido) da haste ${melhorOrigem} para a haste ${melhorDestino}.`
-        };
-    }
-    
-    // 3. Se não encontrou, buscar qualquer movimento válido que não repita o último disco
     for (let origem of ['A', 'B', 'C']) {
         if (hastes[origem].length === 0) continue;
         
         const disco = hastes[origem][hastes[origem].length - 1];
         
-        // Regra: nunca mover o mesmo disco duas vezes seguidas
-        if (disco === ultimoDiscoMovido) continue;
-        
         for (let destino of ['A', 'B', 'C']) {
-            if (origem !== destino && movimentoValido(origem, destino)) {
-                return {
-                    valido: true,
+            if (origem === destino) continue;
+            
+            if (movimentoValido(origem, destino)) {
+                movimentosPossiveis.push({
                     origem: origem,
                     destino: destino,
-                    disco: disco,
-                    mensagem: `💡 DICA: Mova o disco ${disco} da haste ${origem} para a haste ${destino}.`
-                };
+                    disco: disco
+                });
             }
         }
     }
     
-    return {
-        valido: false,
-        mensagem: "🤔 Use a regra: nunca coloque um disco maior sobre um menor. Tente mover o menor disco possível!"
-    };
+    // Filtrar movimentos que seriam inúteis (voltar atrás)
+    let movimentosUteis = movimentosPossiveis.filter(m => {
+        return !ehMovimentoInutil(m.origem, m.destino);
+    });
+    
+    // Se todos os movimentos são inúteis, usa o menos pior
+    if (movimentosUteis.length === 0) {
+        movimentosUteis = movimentosPossiveis;
+    }
+    
+    // Priorizar discos menores
+    movimentosUteis.sort((a, b) => a.disco - b.disco);
+    
+    // Priorizar movimentos que não sejam o mesmo da última dica
+    let movimentoFinal = null;
+    for (let mov of movimentosUteis) {
+        if (!jaFoiSugerido(mov.origem, mov.destino, mov.disco)) {
+            movimentoFinal = mov;
+            break;
+        }
+    }
+    
+    // Se todos já foram sugeridos, pega o primeiro mesmo
+    if (!movimentoFinal && movimentosUteis.length > 0) {
+        movimentoFinal = movimentosUteis[0];
+    }
+    
+    return movimentoFinal;
 }
 
 function mostrarDica() {
-    const dica = encontrarDica();
-    const messageArea = document.getElementById('messageArea');
-    
-    if (dica.valido) {
-        // Evitar dicas repetidas
-        const chaveDica = `${dica.origem}${dica.destino}${dica.disco}`;
-        if (dicasDadas.includes(chaveDica) && dicasDadas.length > 0) {
-            // Dar uma dica alternativa
-            for (let origem of ['A', 'B', 'C']) {
-                if (hastes[origem].length > 0) {
-                    const disco = hastes[origem][hastes[origem].length - 1];
-                    for (let destino of ['A', 'B', 'C']) {
-                        if (origem !== destino && movimentoValido(origem, destino) && 
-                            `${origem}${destino}${disco}` !== chaveDica) {
-                            messageArea.innerHTML = `🔄 Alternativa: Mova o disco ${disco} da haste ${origem} para a haste ${destino}. Tente seguir o padrão dos discos ${disco % 2 === 1 ? 'ímpares (A→B→C)' : 'pares (A→C→B)'}!`;
-                            messageArea.className = 'message-area hint-message';
-                            setTimeout(() => {
-                                if (document.getElementById('messageArea').innerHTML === messageArea.innerHTML) {
-                                    messageArea.innerHTML = '';
-                                    messageArea.className = 'message-area';
-                                }
-                            }, 6000);
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-        
-        dicasDadas.push(chaveDica);
-        if (dicasDadas.length > 5) dicasDadas.shift();
-        
-        messageArea.innerHTML = dica.mensagem;
-        messageArea.className = 'message-area hint-message';
-        
-        // Piscar as hastes sugeridas
-        const hastesElements = document.querySelectorAll('.peg');
-        const indices = { 'A': 0, 'B': 1, 'C': 2 };
-        
-        if (dica.origem && dica.destino) {
-            hastesElements[indices[dica.origem]].style.transition = 'box-shadow 0.3s';
-            hastesElements[indices[dica.origem]].style.boxShadow = '0 0 20px #f39c12';
-            hastesElements[indices[dica.destino]].style.boxShadow = '0 0 20px #48bb78';
-            
-            setTimeout(() => {
-                hastesElements.forEach(el => {
-                    el.style.boxShadow = '';
-                });
-            }, 3000);
-        }
-        
-        setTimeout(() => {
-            if (document.getElementById('messageArea').innerHTML === dica.mensagem) {
-                messageArea.innerHTML = '';
-                messageArea.className = 'message-area';
-            }
-        }, 6000);
-    } else {
-        mostrarMensagem(dica.mensagem, 'error');
+    if (gameWon) {
+        mostrarMensagem("🎉 O jogo já foi concluído! Comece um novo jogo.", 'error');
+        return;
     }
-}
-
-function verificarDicaAutomatica() {
-    if (gameWon) return;
     
-    const tempoAtual = Date.now();
-    const tempoParado = (tempoAtual - ultimoMovimento) / 1000;
+    const movimento = encontrarDicaSemLoop();
     
-    if (tempoParado > 30 && tempoSemMovimento === null) {
-        tempoSemMovimento = setTimeout(() => {
-            if (!gameWon && (Date.now() - ultimoMovimento) > 30000) {
-                mostrarDica();
-            }
-            tempoSemMovimento = null;
-        }, 30000);
-    } else if (tempoParado < 30 && tempoSemMovimento !== null) {
-        clearTimeout(tempoSemMovimento);
-        tempoSemMovimento = null;
+    if (movimento) {
+        const { origem, destino, disco } = movimento;
+        
+        // Explicação personalizada para evitar movimentos bobos
+        let explicacao = "";
+        
+        // Se está tentando mover de volta para onde veio, alertar
+        if (historicoMovimentos.length > 0 && 
+            historicoMovimentos[0].origem === destino && 
+            historicoMovimentos[0].destino === origem) {
+            explicacao = " (Evite voltar o disco que acabou de mover!)";
+        }
+        
+        const mensagem = `💡 DICA: Mova o disco ${disco} da haste ${origem} para a haste ${destino}.${explicacao}`;
+        
+        mostrarMensagem(mensagem, 'success');
+        ultimaDicaUsada = `${origem}->${destino} disco${disco}`;
+    } else {
+        mostrarMensagem("🤔 Não encontrei nenhum movimento possível. Tente reiniciar o jogo.", 'error');
     }
 }
 
@@ -470,8 +389,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    
-    setInterval(() => {
-        verificarDicaAutomatica();
-    }, 5000);
 });
