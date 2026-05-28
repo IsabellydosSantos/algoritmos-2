@@ -77,7 +77,7 @@ function atualizarDisplayCronometro() {
     
     const cronometroDisplay = document.getElementById('cronometro');
     if (cronometroDisplay) {
-        cronometroDisplay.textContent = tempoFormatado;
+        cronometroDisplay.innerHTML = `⏱️ ${tempoFormatado}`;
     }
 }
 
@@ -87,6 +87,58 @@ function getTempoFormatado() {
     const segundos = totalSegundos % 60;
     const milesimos = Math.floor((tempoDecorrido % 1000) / 10);
     return `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}:${milesimos.toString().padStart(2, '0')}`;
+}
+
+// ========== FUNÇÃO PARA ARRASTAR O CRONÔMETRO ==========
+function tornarMovel(elemento) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    let movendo = false;
+    
+    elemento.onmousedown = function(e) {
+        e.preventDefault();
+        
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        
+        movendo = true;
+        
+        document.onmouseup = function() {
+            movendo = false;
+            document.onmouseup = null;
+            document.onmousemove = null;
+            elemento.style.cursor = 'move';
+        };
+        
+        document.onmousemove = function(e) {
+            if (!movendo) return;
+            
+            e.preventDefault();
+            
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            
+            let topAtual = elemento.offsetTop - pos2;
+            let leftAtual = elemento.offsetLeft - pos1;
+            
+            const maxX = window.innerWidth - elemento.offsetWidth;
+            const maxY = window.innerHeight - elemento.offsetHeight;
+            
+            leftAtual = Math.max(0, Math.min(leftAtual, maxX));
+            topAtual = Math.max(0, Math.min(topAtual, maxY));
+            
+            elemento.style.top = topAtual + 'px';
+            elemento.style.left = leftAtual + 'px';
+            elemento.style.right = 'auto';
+        };
+        
+        elemento.style.cursor = 'grabbing';
+    };
+    
+    elemento.ondragstart = function() {
+        return false;
+    };
 }
 
 // ========== FIM DAS FUNÇÕES DO CRONÔMETRO ==========
@@ -414,5 +466,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 aplicarDiscos();
             }
         });
+    }
+    
+    // Tornar o cronômetro móvel
+    const cronometroElemento = document.getElementById('cronometro');
+    if (cronometroElemento) {
+        cronometroElemento.style.position = 'fixed';
+        cronometroElemento.style.top = '20px';
+        cronometroElemento.style.right = '20px';
+        cronometroElemento.style.cursor = 'move';
+        
+        tornarMovel(cronometroElemento);
     }
 });
