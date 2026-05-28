@@ -9,9 +9,36 @@ let moveCount = 0;
 let numDiscos = 3;
 let gameWon = false;
 
-// Histórico para evitar loops
-let historicoMovimentos = []; // Guarda os últimos movimentos
-let ultimaDicaUsada = "";
+// Array para armazenar a sequência ótima de movimentos
+let sequenciaOtima = [];
+
+// ========== FUNÇÃO RECURSIVA PARA GERAR SOLUÇÃO ÓTIMA ==========
+// Exatamente como o algoritmo clássico de Hanói
+function gerarSolucaoOtima(n, origem, destino, auxiliar) {
+    let movimentos = [];
+    
+    if (n === 1) {
+        movimentos.push([origem, destino]);
+        return movimentos;
+    }
+    
+    // Mover n-1 discos da origem para o auxiliar
+    movimentos = movimentos.concat(gerarSolucaoOtima(n - 1, origem, auxiliar, destino));
+    
+    // Mover o disco maior da origem para o destino
+    movimentos.push([origem, destino]);
+    
+    // Mover n-1 discos do auxiliar para o destino
+    movimentos = movimentos.concat(gerarSolucaoOtima(n - 1, auxiliar, destino, origem));
+    
+    return movimentos;
+}
+
+function calcularSequenciaOtima() {
+    sequenciaOtima = gerarSolucaoOtima(numDiscos, 'A', 'C', 'B');
+}
+
+// ========== FIM DA FUNÇÃO RECURSIVA ==========
 
 function inicializarJogo(discoCount = null) {
     if (discoCount === null) {
@@ -43,8 +70,10 @@ function inicializarJogo(discoCount = null) {
     moveCount = 0;
     selectedPeg = null;
     gameWon = false;
-    historicoMovimentos = [];
-    ultimaDicaUsada = "";
+    
+    // Calcular a sequência ótima para a quantidade atual de discos
+    calcularSequenciaOtima();
+    
     document.getElementById('victoryArea').innerHTML = '';
     atualizarInterface();
 }
@@ -77,8 +106,10 @@ function resetarJogo() {
     moveCount = 0;
     selectedPeg = null;
     gameWon = false;
-    historicoMovimentos = [];
-    ultimaDicaUsada = "";
+    
+    // Recalcular a sequência ótima
+    calcularSequenciaOtima();
+    
     document.getElementById('victoryArea').innerHTML = '';
     atualizarInterface();
     mostrarMensagem('Jogo reiniciado!', 'success');
@@ -122,12 +153,6 @@ function realizarMovimento(origem, destino) {
     const disco = hastes[origem].pop();
     hastes[destino].push(disco);
     moveCount++;
-    
-    // Guardar no histórico para evitar loops
-    historicoMovimentos.unshift({ origem, destino, disco });
-    if (historicoMovimentos.length > 6) {
-        historicoMovimentos.pop();
-    }
     
     mostrarMensagem(`✅ Moveu disco ${disco} da haste ${origem} para haste ${destino}`, 'success');
     atualizarInterface();
@@ -191,113 +216,47 @@ function mostrarMensagem(msg, tipo) {
     }, 3000);
 }
 
-// ========== DICA QUE NÃO ENTRA EM LOOP ==========
-
-// Verifica se um movimento iria desfazer o movimento anterior
-function ehMovimentoInutil(origem, destino) {
-    if (historicoMovimentos.length === 0) return false;
-    
-    const ultimo = historicoMovimentos[0];
-    // Se está tentando voltar exatamente o mesmo disco que acabou de ser movido
-    if (ultimo.origem === destino && ultimo.destino === origem) {
-        return true;
-    }
-    return false;
-}
-
-// Verifica se um movimento está sugerindo a mesma coisa repetidamente
-function jaFoiSugerido(origem, destino, disco) {
-    const chave = `${origem}->${destino} disco${disco}`;
-    if (ultimaDicaUsada === chave) {
-        return true;
-    }
-    return false;
-}
-
-function encontrarDicaSemLoop() {
-    if (gameWon) {
-        return null;
-    }
-    
-    // Lista todos os movimentos possíveis
-    let movimentosPossiveis = [];
-    
-    for (let origem of ['A', 'B', 'C']) {
-        if (hastes[origem].length === 0) continue;
-        
-        const disco = hastes[origem][hastes[origem].length - 1];
-        
-        for (let destino of ['A', 'B', 'C']) {
-            if (origem === destino) continue;
-            
-            if (movimentoValido(origem, destino)) {
-                movimentosPossiveis.push({
-                    origem: origem,
-                    destino: destino,
-                    disco: disco
-                });
-            }
-        }
-    }
-    
-    // Filtrar movimentos que seriam inúteis (voltar atrás)
-    let movimentosUteis = movimentosPossiveis.filter(m => {
-        return !ehMovimentoInutil(m.origem, m.destino);
-    });
-    
-    // Se todos os movimentos são inúteis, usa o menos pior
-    if (movimentosUteis.length === 0) {
-        movimentosUteis = movimentosPossiveis;
-    }
-    
-    // Priorizar discos menores
-    movimentosUteis.sort((a, b) => a.disco - b.disco);
-    
-    // Priorizar movimentos que não sejam o mesmo da última dica
-    let movimentoFinal = null;
-    for (let mov of movimentosUteis) {
-        if (!jaFoiSugerido(mov.origem, mov.destino, mov.disco)) {
-            movimentoFinal = mov;
-            break;
-        }
-    }
-    
-    // Se todos já foram sugeridos, pega o primeiro mesmo
-    if (!movimentoFinal && movimentosUteis.length > 0) {
-        movimentoFinal = movimentosUteis[0];
-    }
-    
-    return movimentoFinal;
-}
-
+// ========== DICA USANDO A SEQUÊNCIA GERADA RECURSIVAMENTE ==========
 function mostrarDica() {
     if (gameWon) {
         mostrarMensagem("🎉 O jogo já foi concluído! Comece um novo jogo.", 'error');
         return;
     }
     
-    const movimento = encontrarDicaSemLoop();
-    
-    if (movimento) {
-        const { origem, destino, disco } = movimento;
-        
-        // Explicação personalizada para evitar movimentos bobos
-        let explicacao = "";
-        
-        // Se está tentando mover de volta para onde veio, alertar
-        if (historicoMovimentos.length > 0 && 
-            historicoMovimentos[0].origem === destino && 
-            historicoMovimentos[0].destino === origem) {
-            explicacao = " (Evite voltar o disco que acabou de mover!)";
-        }
-        
-        const mensagem = `💡 DICA: Mova o disco ${disco} da haste ${origem} para a haste ${destino}.${explicacao}`;
-        
-        mostrarMensagem(mensagem, 'success');
-        ultimaDicaUsada = `${origem}->${destino} disco${disco}`;
-    } else {
-        mostrarMensagem("🤔 Não encontrei nenhum movimento possível. Tente reiniciar o jogo.", 'error');
+    // Verificar se a sequência foi gerada
+    if (sequenciaOtima.length === 0) {
+        calcularSequenciaOtima();
     }
+    
+    // O próximo movimento correto é o movimento número 'moveCount'
+    if (moveCount >= sequenciaOtima.length) {
+        mostrarMensagem("🤔 Você já deveria ter vencido! Algo deu errado.", 'error');
+        return;
+    }
+    
+    const proximoMovimento = sequenciaOtima[moveCount];
+    const [origemCorreta, destinoCorreto] = proximoMovimento;
+    
+    // Verificar se a haste de origem tem disco
+    if (hastes[origemCorreta].length === 0) {
+        mostrarMensagem(`⚠️ A sequência ótima diz para mover da haste ${origemCorreta} para ${destinoCorreto}, mas a haste ${origemCorreta} está vazia. Você pode ter se desviado da solução ótima. Tente reiniciar se quiser seguir o caminho mínimo.`, 'success');
+        return;
+    }
+    
+    const disco = hastes[origemCorreta][hastes[origemCorreta].length - 1];
+    const movimentosRestantes = sequenciaOtima.length - moveCount;
+    
+    let mensagem = `🎯 DICA: Mova o disco ${disco} da haste ${origemCorreta} para a haste ${destinoCorreto}. `;
+    
+    if (movimentosRestantes === 1) {
+        mensagem += `🚀 Este é o ÚLTIMO movimento! Você vai vencer!`;
+    } else if (moveCount === 0) {
+        mensagem += `📚 Este é o primeiro movimento da solução mínima de ${sequenciaOtima.length} movimentos.`;
+    } else {
+        mensagem += `📊 Faltam ${movimentosRestantes} movimentos para vencer no mínimo.`;
+    }
+    
+    mostrarMensagem(mensagem, 'success');
 }
 
 function atualizarInterface() {
