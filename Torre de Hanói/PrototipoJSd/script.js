@@ -412,9 +412,9 @@ function mostrarDica() {
             if (moveCount === 0) {
                 mensagem += ` 📚 Este é o primeiro movimento da solução mínima de ${minimoTotal} movimentos.`;
             } else if (movimentosRestantes === 1) {
-                mensagem += ` 🚀 Este é o ÚLTIMO movimento! Você vai vencer!`;
+                mensagem += ` 🚀 Este é o último movimento!`;
             } else if (movimentosRestantes > 0) {
-                mensagem += ` 📊 Faltam ${movimentosRestantes} movimentos para vencer no mínimo.`;
+                mensagem += ` 📊 Faltam ${movimentosRestantes} movimentos para vencer na solução mínima.`;
             }
             
             mostrarMensagem(mensagem, 'success');
@@ -429,7 +429,7 @@ function mostrarDica() {
             const discoSugerido = hastes[origemCorreta][hastes[origemCorreta].length - 1];
             mostrarMensagem(`🎯 DICA: Mova o disco ${discoSugerido} da haste ${origemCorreta} para a haste ${destinoCorreto}.`, 'success');
         } else {
-            mostrarMensagem(`⚠️ Você se desviou da solução. Clique em "Resetar" para recomeçar.`, 'success');
+            mostrarMensagem(`⚠️ Você se desviou da solução mínima. Clique em "Resetar" para recomeçar.`, 'success');
         }
     } else {
         mostrarMensagem("🤔 Não foi possível determinar o próximo movimento. Tente resetar o jogo.", 'error');
