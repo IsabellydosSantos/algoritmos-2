@@ -1,51 +1,35 @@
 import time  # Para animações e tempo de jogo
 import os    # Para limpar tela e tamanho do terminal
 
-# =========================
-# CORES ANSI
-# =========================
-# Dicionário: cada número de disco tem uma cor diferente
-# =========================
-
 CORES = {
-    1: '\033[91m',   # 1 → Vermelho (Vermelho)
-    2: '\033[33m',   # 2 → Amarelo (Laranja não tem padrão, uso amarelo forte)
-    3: '\033[93m',   # 3 → Amarelo claro
-    4: '\033[92m',   # 4 → Verde
-    5: '\033[96m',   # 5 → Ciano (Azul claro)
-    6: '\033[94m',   # 6 → Azul
-    7: '\033[95m',   # 7 → Roxo (Violeta)
-    8: '\033[35m',   # 8 → Magenta (para 8 discos, cor complementar)
+    1: '\033[91m',   # Vermelho 
+    2: '\033[33m',   # "Laranja"
+    3: '\033[93m',   # Amarelo claro
+    4: '\033[92m',   # Verde
+    5: '\033[96m',   # Ciano 
+    6: '\033[94m',   # Azul
+    7: '\033[95m',   # Roxo 
+    8: '\033[35m',   # Magenta (para 8 discos, cor complementar)
 }
 
 RESET = '\033[0m'
 
-# =========================
-# UTILIDADES
-# =========================
-
 def limpar_tela():
-    """Limpa o terminal (Windows: cls, Linux/Mac: clear)"""
     os.system('cls' if os.name == 'nt' else 'clear')
 
+
 def largura_terminal():
-    """Retorna a largura do terminal em colunas (padrão 80 se falhar)"""
     try:
         return os.get_terminal_size().columns
     except:
         return 80
 
-# =========================
-# DISCOS
-# =========================
 
 def criar_texto_disco(numero):
-    """Cria a representação visual de um disco
-    Ex: Disco 3 → "██3██" (largura 5, número no centro)"""
-    largura = numero * 2 - 1  # Fórmula: cada disco tem largura ímpar
-    texto = "█" * largura     # Base de blocos
+    largura = numero * 2 - 1
+    texto = "█" * largura
     
-    if largura >= 3:  # Discos com número visível (>= 2)
+    if largura >= 3:  
         meio = largura // 2
         # Substitui o caractere do meio pelo número do disco
         texto = texto[:meio] + str(numero) + texto[meio + 1:]
