@@ -56,25 +56,22 @@ def exibir_hastes(hastes, n, movimentos, minimo_teorico, start_time):
         linha = ""
         
         for haste in ['A', 'B', 'C']:
-            area = [" "] * largura_area  # Cria área vazia para esta haste
-            centro = largura_area // 2    # Posição central
+            area = [" "] * largura_area  
+            centro = largura_area // 2  
             
-            if nivel < len(hastes[haste]):  # Se existe disco neste nível
-                disco = hastes[haste][nivel]  # Pega o número do disco
-                texto = criar_texto_disco(disco)  # Cria visual do disco
+            if nivel < len(hastes[haste]):  
+                disco = hastes[haste][nivel] 
+                texto = criar_texto_disco(disco)
                 largura_disco = len(texto)
                 
-                # Centraliza o disco na haste
                 inicio = centro - largura_disco // 2
-                cor = CORES.get(disco, '\033[97m')  # Pega a cor do disco
+                cor = CORES.get(disco, '\033[97m') 
                 
-                # Desenha cada caractere do disco na posição correta
                 for i, char in enumerate(texto):
                     pos = inicio + i
                     if 0 <= pos < largura_area:
                         area[pos] = cor + char + RESET  # Aplica cor
             else:
-                # Sem disco, desenha o suporte "│"
                 area[centro] = "│"
             
             linha += "".join(area)
@@ -83,42 +80,30 @@ def exibir_hastes(hastes, n, movimentos, minimo_teorico, start_time):
     
     print("-" * largura_total)
     
-    # === ESTATÍSTICAS DO JOGO ===
-    progresso = (len(hastes['C']) / n) * 100  # Percentual completado
+    progresso = (len(hastes['C']) / n) * 100 
     
-    # Calcula tempo decorrido
     tempo_decorrido = int(time.time() - start_time)
     minutos = tempo_decorrido // 60
     segundos = tempo_decorrido % 60
     
-    # Exibe movimentos e meta
     print(f"\n📊 Movimentos: {movimentos}  |  ⭐ Mínimo teórico: {minimo_teorico}")
     
-    # Barra de progresso (40 blocos)
     barras = int((progresso / 100) * 40)
     barra = "█" * barras + "░" * (40 - barras)
     print(f"📈 [{barra}] {progresso:.0f}%")
     
-    # Tempo e comandos
     print(f"⏱ Tempo: {minutos:02d}:{segundos:02d}")
     print("\nComandos: A C | DICA | Q")
     print("=" * largura_total)
 
-# =========================
-# VALIDAÇÃO
-# =========================
 
 def movimento_valido(hastes, origem, destino):
-    """Verifica se o movimento é permitido pelas regras da Torre de Hanói"""
-    
-    # Regra 1: haste origem não pode estar vazia
     if not hastes[origem]:
         print("\n❌ Haste vazia!")
         return False
     
-    disco_origem = hastes[origem][-1]  # Pega disco do topo
+    disco_origem = hastes[origem][-1] 
     
-    # Regra 2: disco maior não pode ficar sobre menor
     if hastes[destino]:
         disco_destino = hastes[destino][-1]
         if disco_origem > disco_destino:
@@ -127,23 +112,13 @@ def movimento_valido(hastes, origem, destino):
     
     return True
 
-# =========================
-# ANIMAÇÃO
-# =========================
 
 def animar_movimento(origem, destino, disco):
-    """Mostra uma animação simples do movimento"""
     print(f"\n➡️ Disco {disco}: {origem} → {destino}")
-    time.sleep(0.3)  # Pequena pausa para efeito visual
+    time.sleep(0.3)  
 
-# =========================
-# DICAS (ALGORITMO RECURSIVO)
-# =========================
 
 def encontrar_proximo_movimento(hastes, n, origem, destino, auxiliar):
-    """Usa recursão para encontrar o próximo movimento ótimo"""
-    
-    # Caso base: mover disco 1 diretamente
     if n == 1:
         if hastes[origem] and hastes[origem][-1] == 1:
             return (origem, destino, 1)
@@ -174,11 +149,10 @@ def encontrar_proximo_movimento(hastes, n, origem, destino, auxiliar):
     
     return None
 
-def gerar_dica_solucao(hastes, n):
-    """Gera uma dica textual do próximo movimento ideal"""
-    
+
+def gerar_dica_solucao(hastes, n):   
     if len(hastes['C']) == n:
-        return "🎉 VOCÊ JÁ VENCEU!"
+        return "🎉 Você já venceu!"
     
     proximo = encontrar_proximo_movimento(hastes, n, 'A', 'C', 'B')
     if proximo:
@@ -187,55 +161,44 @@ def gerar_dica_solucao(hastes, n):
     
     return "Digite um comando válido."
 
-# =========================
-# JOGO PRINCIPAL
-# =========================
 
-def jogar_hanoi():
-    """Função principal que gerencia todo o jogo"""
-    
+def jogar_hanoi():    
     print("\n" + "=" * 50)
     print("TORRE DE HANÓI".center(50))
     print("=" * 50)
     
     try:
-        # Configuração inicial
         n = int(input("\nNúmero de discos (1-8): "))
         
         if n < 1 or n > 8:
-            print("Digite entre 1 e 8.")
+            print("Digite um número entre 1 e 8.")
             return
         
-        # Estado inicial: todos discos em A, B e C vazios
         hastes = {
-            'A': list(range(n, 0, -1)),  # [n, n-1, ..., 1]
+            'A': list(range(n, 0, -1)), 
             'B': [],
             'C': []
         }
         
         movimentos = 0
-        minimo_teorico = (2 ** n - 1)  # Fórmula matemática
-        start_time = time.time()  # Marca início
+        minimo_teorico = (2 ** n - 1)  
+        start_time = time.time() 
         
-        # Loop principal do jogo
-        while hastes['C'] != list(range(n, 0, -1)):  # Enquanto não venceu
+        while hastes['C'] != list(range(n, 0, -1)):
             exibir_hastes(hastes, n, movimentos, minimo_teorico, start_time)
             
             comando = input("\n🎮 Jogada (A C), DICA ou Q: ").upper().strip()
             
-            # Opção sair
             if comando == 'Q':
                 print("\n👋 Até logo!")
                 return
             
-            # Opção dica
             if comando == 'DICA':
                 dica = gerar_dica_solucao(hastes, n)
                 print(f"\n💡 {dica}")
                 input("\nENTER para continuar...")
                 continue
             
-            # Processa movimento (ex: "A C")
             partes = comando.split()
             if len(partes) != 2:
                 print("\n❌ Use: A C")
@@ -244,7 +207,6 @@ def jogar_hanoi():
             
             origem, destino = partes
             
-            # Valida hastes
             if origem not in ['A', 'B', 'C'] or destino not in ['A', 'B', 'C']:
                 print("\n❌ Haste inválida")
                 time.sleep(1)
@@ -255,16 +217,14 @@ def jogar_hanoi():
                 time.sleep(1)
                 continue
             
-            # Executa movimento se válido
             if movimento_valido(hastes, origem, destino):
                 disco = hastes[origem].pop()  # Remove da origem
                 hastes[destino].append(disco)  # Adiciona ao destino
                 movimentos += 1
                 animar_movimento(origem, destino, disco)
         
-        # === VITÓRIA ===
         exibir_hastes(hastes, n, movimentos, minimo_teorico, start_time)
-        print("\n🎉 PARABÉNS! 🎉\n")
+        print("\n🎉 Parabéns! 🎉\n")
         
         tempo_total = int(time.time() - start_time)
         minutos = tempo_total // 60
@@ -275,16 +235,13 @@ def jogar_hanoi():
         print(f"Tempo: {minutos:02d}:{segundos:02d}")
         
         if movimentos == minimo_teorico:
-            print("\n⭐ SOLUÇÃO PERFEITA! ⭐")
+            print("\n⭐ Solução perfeita! ⭐")
         
         input("\nENTER para sair...")
     
     except ValueError:
         print("\nDigite um número válido.")
 
-# =========================
-# EXECUÇÃO
-# =========================
 
 if __name__ == "__main__":
     jogar_hanoi()  # Só executa se o arquivo for rodado diretamente
