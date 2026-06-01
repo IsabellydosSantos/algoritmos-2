@@ -244,4 +244,4 @@ def jogar_hanoi():
 
 
 if __name__ == "__main__":
-    jogar_hanoi()  # Só executa se o arquivo for rodado diretamente
+    jogar_hanoi() 
