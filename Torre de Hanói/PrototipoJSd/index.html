@@ -3,31 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Torre de Hanói - Jogo Interativo</title>
+    <title>Torre de Hanói - Dica Inteligente</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="game-container">
         <h1>🏰 Torre de Hanói</h1>
+        <div class="timer-float" id="cronometro">00:00:00</div>
         <div class="subtitle">Clique em uma haste para selecionar, depois em outra para mover</div>
 
         <div class="game-info">
-    <div class="info-card">
-        <h3>🎯 Movimentos</h3>
-        <div class="value" id="moveCount">0</div>
-    </div>
-    <div class="info-card">
-        <h3>⭐ Mínimo Teórico</h3>
-        <div class="value" id="minMoves">0</div>
-    </div>
-    <div class="info-card">
-        <h3>⏱️ Tempo</h3>
-        <div class="value" id="cronometro">00:00:00</div>
-    </div>
-    <div class="info-card">
-        <h3>💿 Discos</h3>
-        <div class="value" id="diskCount">0</div>
-    </div>
+            <div class="info-card">
+                <h3>🎯 Movimentos</h3>
+                <div class="value" id="moveCount">0</div>
+            </div>
+            <div class="info-card">
+                <h3>⭐ Movimentos Mínimos</h3>
+                <div class="value" id="minMoves">0</div>
+            </div>
+            <div class="info-card">
+                <h3>💿 Discos</h3>
+                <div class="value" id="diskCount">0</div>
+            </div>
         </div>
 
         <div class="disk-config">
@@ -41,7 +38,6 @@
         <div id="victoryArea"></div>
 
         <div class="hanoi-container" id="hanoiContainer">
-            <!-- Hastes serão inseridas via JavaScript -->
         </div>
 
         <div class="controls">
@@ -55,5 +51,4 @@
 
     <script src="script.js"></script>
 </body>
-  </html>
-  
+</html>
