@@ -1,5 +1,5 @@
-import time  # Para animações e tempo de jogo
-import os    # Para limpar tela e tamanho do terminal
+import time
+import os
 
 CORES = {
     1: '\033[91m',   # Vermelho 
@@ -31,38 +31,27 @@ def criar_texto_disco(numero):
     
     if largura >= 3:  
         meio = largura // 2
-        # Substitui o caractere do meio pelo número do disco
         texto = texto[:meio] + str(numero) + texto[meio + 1:]
     
     return texto
 
-# =========================
-# EXIBIÇÃO
-# =========================
 
 def exibir_hastes(hastes, n, movimentos, minimo_teorico, start_time):
-    """Desenha todo o estado atual do jogo na tela"""
-    
-    # Configurações de layout
     largura_total = largura_terminal()
-    largura_area = largura_total // 3  # Cada haste ocupa 1/3 da tela
+    largura_area = largura_total // 3 
     limpar_tela()
     
-    # === TÍTULO ===
     print("=" * largura_total)
     print("🎮 TORRE DE HANÓI 🎮".center(largura_total))
     print("=" * largura_total)
     print(f"\nObjetivo: mover {n} discos de A → C\n")
     
-    # === TOPO DAS HASTES (A, B, C) ===
     linha_topo = ""
     for letra in ['A', 'B', 'C']:
         linha_topo += letra.center(largura_area)
     print(linha_topo)
     print("-" * largura_total)
     
-    # === DESENHA OS DISCOS NÍVEL POR NÍVEL ===
-    # Do nível mais alto (n-1) ao mais baixo (0)
     for nivel in range(n - 1, -1, -1):
         linha = ""
         
