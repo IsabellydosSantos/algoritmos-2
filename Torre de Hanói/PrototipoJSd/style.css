@@ -137,10 +137,46 @@ h1 {
     position: relative;
 }
 
-#cronometro {
+.timer-float {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 60px;
     font-family: 'Courier New', monospace;
+    font-size: 28px;
     font-weight: bold;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    z-index: 1000;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+    cursor: move;
+    user-select: none;
+    transition: box-shadow 0.2s;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.timer-float:active {
+    cursor: grabbing;
+    box-shadow: 0 8px 40px rgba(102, 126, 234, 0.8);
+}
+
+@media (max-width: 768px) {
+    .timer-float {
+        font-size: 20px;
+        padding: 8px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .timer-float {
+        font-size: 16px;
+        padding: 6px 12px;
+    }
 }
 
 .peg {
@@ -232,6 +268,18 @@ h1 {
     gap: 15px;
     justify-content: center;
     margin-top: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: bold;
 }
 
 button {
@@ -321,4 +369,4 @@ button {
     .peg-label {
         font-size: 14px;
     }
-  }
+}
