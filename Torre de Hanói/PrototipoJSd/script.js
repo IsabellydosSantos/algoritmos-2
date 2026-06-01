@@ -379,7 +379,7 @@ function mostrarMensagem(msg, tipo) {
             messageArea.innerHTML = '';
             messageArea.className = 'message-area';
         }
-    }, 5000);
+    }, 8000);
 }
 
 // ========== DICA INTELIGENTE (MESMA LÓGICA DO PYTHON) ==========
