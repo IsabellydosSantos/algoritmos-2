@@ -115,7 +115,7 @@ def movimento_valido(hastes, origem, destino):
 
 def animar_movimento(origem, destino, disco):
     print(f"\n➡️ Disco {disco}: {origem} → {destino}")
-    time.sleep(0.3)  
+    time.sleep(0.5)  
 
 
 def encontrar_proximo_movimento(hastes, n, origem, destino, auxiliar):
