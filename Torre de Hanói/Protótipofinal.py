@@ -9,7 +9,7 @@ CORES = {
     5: '\033[96m',   # Ciano 
     6: '\033[94m',   # Azul
     7: '\033[95m',   # Roxo 
-    8: '\033[35m',   # Magenta (para 8 discos, cor complementar)
+    8: '\033[35m',   # Magenta
 }
 
 RESET = '\033[0m'
