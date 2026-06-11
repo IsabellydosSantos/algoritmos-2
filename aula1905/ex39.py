@@ -28,3 +28,4 @@ def busca_binaria(lista, chave):
 
     if prim_posic == -1:
         return f"Erro: A chave '{chave}' não foi encontrada na lista"
+        
